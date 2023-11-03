@@ -1,0 +1,150 @@
+swagger: "2.0"
+info:
+  title: Sicredi Test
+  description: API to test Java knowledge
+  version: 1.0.0
+host: localhost:8080
+basePath: /api/v1/sicredi
+schemes:
+  - https
+paths:
+  /associates:
+    post:
+        summary: creates an associate
+        parameters:
+          - $ref: '#/definitions/Associate'
+        responses:
+            200:
+              description: associate created
+              schema:
+                  $ref: '#/definitions/Associate'
+            404:
+              description: information missing
+
+  /topics:
+    get:
+      summary: returns all topics
+      responses:
+        200:
+          description: returns all topics
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Topic'
+    post:
+        summary: creates a topic
+        parameters:
+          - $ref: '#/definitions/Topic'
+        responses:
+            200:
+              description: topic created
+              schema:
+                  $ref: '#/definitions/Topic'
+
+  /sessions:
+    post:
+        summary: creates a session
+        parameters:
+          - $ref: '#/definitions/Session'
+        responses:
+            200:
+              description: session created
+              schema:
+                  $ref: '#/definitions/Session'
+            404:
+              description: invalid request
+
+  /sessions/votesCount/{sessionId}:
+    get:
+      summary: returns the number of votes for a session
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          type: string
+          format: UUID
+      responses:
+        200:
+          description: returns the number of votes for a session
+          schema:
+            type: integer
+        404:
+          description: session not found
+
+  /votes:
+    post:
+        summary: creates a vote
+        parameters:
+          - $ref: '#/definitions/Vote'
+        responses:
+            200:
+              description: vote created
+              schema:
+                  $ref: '#/definitions/Vote'
+            404:
+              description: invalid request
+            500:
+              description: internal server error
+  
+definitions:
+  Associate:
+    type: object
+    properties:
+      id:
+        type: string
+        format: UUID
+      name:
+        type: string
+      cpf:
+        type: string
+      votes:
+        type: array
+        items:
+          $ref: '#/definitions/Vote'
+
+  Topic:
+    type: object
+    properties:
+      id:
+        type: string
+        format: UUID
+      description:
+        type: string
+
+  Session:
+    type: object
+    properties:
+      id:
+        type: string
+        format: UUID
+      topic:
+        $ref: '#/definitions/Topic'
+      startAt:
+        type: string
+        format: date-time
+      endAt:
+        type: string
+        format: date-time
+      votes:
+        type: array
+        items:
+          $ref: '#/definitions/Vote'
+
+  Vote:
+    type: object
+    properties:
+      id:
+        type: string
+        format: UUID
+      associateId:
+        type: string
+        format: UUID
+      vote:
+        type: string
+        enum: [YES, NO]
+      topicId:
+        type: string
+        format: UUID
+      votedAt:
+        type: string
+        format: date-time
